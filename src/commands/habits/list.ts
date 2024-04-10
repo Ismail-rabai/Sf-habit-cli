@@ -70,10 +70,16 @@ export default class HabitsList extends Command {
         minWidth: 20,
       },
       description: {
-        extended: true, 
-        get: (row: { description: Habit }) => row.description || 'N/A',
+        extended: true,
+        get: (row: { Description: Habit }) => row.Description || 'N/A',
         header: 'Description',
         minWidth: 20,
+      },
+      sfid: {
+        extended: true,
+        get: (row: { sfid: Habit }) => row.sfid?  `Yes ${row.sfid}` : 'No',
+        header: 'SalesforceId',
+        minWidth: 10,
       },
     }
     // this.log(JSON.stringify(createdHabit))

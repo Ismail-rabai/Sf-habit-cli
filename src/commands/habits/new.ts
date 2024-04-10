@@ -22,10 +22,10 @@ export default class HabitsNew extends Command {
   ]
 
   static override flags = {
+    ContactId : Flags.string({char:'c', description: 'Id of the contact that want to add the habit'}),
     Date: Flags.string({ char: 'd', description: 'Date of the habit' }),
     Description: Flags.string({ char: 'D', description: 'Description of the habit' }),
     Frequency: Flags.string({ char: 'f', description: 'Frequency of the habit for example 1 mean every dar 2 every 2 days etcs' }),
-    Id: Flags.string({ char: 'i', description: 'Id of the contact that want to add the habit' }),
     Reminder: Flags.string({ char: 'r', description: 'Reminder time' }),
   }
 
@@ -34,28 +34,29 @@ export default class HabitsNew extends Command {
 
   public async run(): Promise<void> {
     const { args, flags } = await this.parse(HabitsNew)
-    this.log(`you input --name and --date: ${args.name} ${flags.Date}`)
-
-    let {Description, Frequency, Reminder, category} = flags
-    if (!category) {
+    this.log(`you input --name and --date: ${flags.Description}`)
+    
+    if (!args.category) {
       const result = await inquirer.prompt([{
         choices: ['Exercise', 'Reading', 'Meditation', 'Coding', 'Healthy Eating', 'Others'],
         message: 'What is the category of the habit?',
         name: 'category',
         type: 'list',
       }])
-      category = result.category
+      args.category = result.category
     }
 
     const habit : Habit = {
+      ContactId: flags.ContactId || '',
       Date:flags.Date,
-      Description:Description ||'',
-      Frequency:Frequency ||'1',
-      Reminder:Reminder ||'14:00',
-      category,
-      name:args.name
+      Description: flags.Description ||'',
+      Frequency:flags.Frequency ||'1',
+      Reminder:flags.Reminder ||'14:00',
+      category: args.category,
+      name:args.name,
+      sfid: null
     }
     const createdHabit = await this.#db.createHabit(habit)
-    this.log(`Habit created with id ${createdHabit.id}`)
+    this.log(`Habit created with id ${createdHabit.id}`) 
   }
 }
