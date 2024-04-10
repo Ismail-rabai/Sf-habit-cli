@@ -41,6 +41,8 @@ USAGE
 <!-- usagestop -->
 # Commands
 <!-- commands -->
+* [`habit habits list [FILE]`](#habit-habits-list-file)
+* [`habit habits new NAME CATEGORY`](#habit-habits-new-name-category)
 * [`habit help [COMMAND]`](#habit-help-command)
 * [`habit plugins`](#habit-plugins)
 * [`habit plugins add PLUGIN`](#habit-plugins-add-plugin)
@@ -52,6 +54,58 @@ USAGE
 * [`habit plugins uninstall [PLUGIN]`](#habit-plugins-uninstall-plugin)
 * [`habit plugins unlink [PLUGIN]`](#habit-plugins-unlink-plugin)
 * [`habit plugins update`](#habit-plugins-update)
+
+## `habit habits list [FILE]`
+
+Showing all the habits
+
+```
+USAGE
+  $ habit habits list [FILE] [-f] [-n <value>]
+
+ARGUMENTS
+  FILE  file to read
+
+FLAGS
+  -f, --force
+  -n, --name=<value>  name to print
+
+DESCRIPTION
+  Showing all the habits
+
+EXAMPLES
+  $ habit habits list
+```
+
+_See code: [src/commands/habits/list.ts](https://github.com/irabai/habit-cli/blob/v0.0.0/src/commands/habits/list.ts)_
+
+## `habit habits new NAME CATEGORY`
+
+Creating a new habit
+
+```
+USAGE
+  $ habit habits new NAME CATEGORY [-d <value>] [-D <value>] [-f <value>] [-i <value>] [-r <value>]
+
+ARGUMENTS
+  NAME      the name of the habit
+  CATEGORY  (Exercise|Reading|Meditation|Coding|Healthy Eating|Others) the category of the habit
+
+FLAGS
+  -D, --Description=<value>  Description of the habit
+  -d, --Date=<value>         Date of the habit
+  -f, --Frequency=<value>    Frequency of the habit for example 1 mean every dar 2 every 2 days etcs
+  -i, --Id=<value>           Id of the contact that want to add the habit
+  -r, --Reminder=<value>     Reminder time
+
+DESCRIPTION
+  Creating a new habit
+
+EXAMPLES
+  $ habit habits new "Food" "Healthy eating" --id "contact" --Date 20/04/2024 --Reminder 14:00 --Frequency 1 --Description "This is a test habit"
+```
+
+_See code: [src/commands/habits/new.ts](https://github.com/irabai/habit-cli/blob/v0.0.0/src/commands/habits/new.ts)_
 
 ## `habit help [COMMAND]`
 
