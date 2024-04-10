@@ -47,6 +47,13 @@ export default class habitDB {
             Reminder TEXT
         )
         `);
+    }
+
+
+    async shortListHabits(number :number): Promise<Habit[]> {
+        const stmt = this.#client.prepare(`SELECT * FROM habits ORDER BY id LIMIT ${number}`);
+        const rows = stmt.all();
+        return rows as Habit[]
     } 
 }
 

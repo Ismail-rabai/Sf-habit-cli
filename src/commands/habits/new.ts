@@ -1,4 +1,5 @@
 import { Args, Command, Flags } from '@oclif/core'
+import inquirer from 'inquirer'
 
 import { Habit } from '../../lib/habit'
 import habitDB from '../../lib/habit-db'
@@ -6,17 +7,18 @@ import habitDB from '../../lib/habit-db'
 
 export default class HabitsNew extends Command {
   
- static override args = {
+  static override aliases = ['new', 'create']
+  static override args = {
     // eslint-disable-next-line perfectionist/sort-objects
     name: Args.string({ name: 'name', description: 'the name of the habit', required: true }),
     // eslint-disable-next-line perfectionist/sort-objects
-    category: Args.string({ name: 'category', description: 'the category of the habit', required: true, options: ['Exercise', 'Reading', 'Meditation', 'Coding', 'Healthy Eating', 'Others'] }),
+    category: Args.string({ name: 'category', description: 'the category of the habit', options: ['Exercise', 'Reading', 'Meditation', 'Coding', 'Healthy Eating', 'Others'] }),
   }
 
   static override description = 'Creating a new habit'
 
   static override examples = [
-    '<%= config.bin %> <%= command.id %> "Food" "Healthy eating" --id "contact" --Date 20/04/2024 --Reminder 14:00 --Frequency 1 --Description "This is a test habit"',
+    '<%= config.bin %> <%= command.id %> "Food" --id "contact" --Date 20/04/2024 --Reminder 14:00 --Frequency 1 --Description "This is a test habit"',
   ]
 
   static override flags = {
@@ -34,12 +36,23 @@ export default class HabitsNew extends Command {
     const { args, flags } = await this.parse(HabitsNew)
     this.log(`you input --name and --date: ${args.name} ${flags.Date}`)
 
+    let {Description, Frequency, Reminder, category} = flags
+    if (!category) {
+      const result = await inquirer.prompt([{
+        choices: ['Exercise', 'Reading', 'Meditation', 'Coding', 'Healthy Eating', 'Others'],
+        message: 'What is the category of the habit?',
+        name: 'category',
+        type: 'list',
+      }])
+      category = result.category
+    }
+
     const habit : Habit = {
       Date:flags.Date,
-      Description:flags.Description ||'',
-      Frequency:flags.Frequency ||'1',
-      Reminder:flags.Reminder ||'14:00',
-      category:args.category,
+      Description:Description ||'',
+      Frequency:Frequency ||'1',
+      Reminder:Reminder ||'14:00',
+      category,
       name:args.name
     }
     const createdHabit = await this.#db.createHabit(habit)
