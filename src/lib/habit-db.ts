@@ -25,10 +25,20 @@ export default class habitDB {
 
         return { ...habit, id: info.lastInsertRowid };
     }
-    
-    /* async getHabit(id: number): Promise<Habit>{
 
-    } */
+    deleteHabit(id: bigint | number | undefined) : void {
+        const stmt = this.#client.prepare(`
+            DELETE FROM habits WHERE id = @id
+        `);
+        stmt.run({id});
+    }
+    
+    getHabitBySfid(sfid: string | undefined): Habit | null {
+        const stmt = this.#client.prepare(`
+            SELECT * FROM habits where sfid = @sfid
+        `);
+        return stmt.get({ sfid }) as unknown as Habit | null;
+    }
 
     async listHabits(): Promise<Habit[]> {
         const stmt = this.#client.prepare(`SELECT * FROM habits`);
@@ -79,8 +89,7 @@ export default class habitDB {
         WHERE id = @id
         `)
         stmt.run(habit)
-        return habit
-        
+        return habit  
     } 
 }
 

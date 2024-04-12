@@ -2485,11 +2485,6 @@
   resolved "https://registry.npmjs.org/@types/minimist/-/minimist-1.2.5.tgz"
   integrity sha512-hov8bUuiLiyFPGyFPE1lwWhmzYbirOXQNNo40+y3zow8aFVTeyn3VWL0VFFfdNddA8S4Vf0Tc062rzyNr7Paag==
 
-"@types/mocha@^10.0.0":
-  version "10.0.6"
-  resolved "https://registry.npmjs.org/@types/mocha/-/mocha-10.0.6.tgz"
-  integrity sha512-dJvrYWxP/UcXm36Qn36fxhUKu8A/xMRXVT2cliFF1Z7UA9liG5Psj3ezNSZw+5puH2czDXRLcXQxf8JbJt0ejg==
-
 "@types/mocha@^10.0.6":
   version "10.0.6"
   resolved "https://registry.npmjs.org/@types/mocha/-/mocha-10.0.6.tgz"

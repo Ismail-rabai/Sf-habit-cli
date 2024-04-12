@@ -22,21 +22,21 @@ export default class HabitsSync extends Command {
   #db = new habitDB(this.config.dataDir)
 
   public async run(): Promise<void> {
+    this.log('The command is Running')
     const {flags} = await this.parse(HabitsSync)
     const authInfo = await AuthInfo.create({username: flags['target-org']})
     const conn = await Connection.create({authInfo})
-
     // get local habit witho no salesforce id 
     const localHabit = this.#db.listLocalHabits();
     for await (const habit of localHabit){
       // Create a new habit in salesforce
       const habitDate = habit.Date ? new Date(habit.Date) : new Date();
+      const contactId = habit.ContactId || '0037R00003Otk4uQAB';
       const sfHabit = await conn.sobject('Habit__c').create({
         // eslint-disable-next-line camelcase
         Category__c: habit.category,
         // eslint-disable-next-line camelcase
-        Contact__c: '0037R00003Otk4uQAB',
-        // Contact__c: habit.ContactId,
+        Contact__c: contactId ,
         // eslint-disable-next-line camelcase
         Description__c: habit.Description,
         // eslint-disable-next-line camelcase
@@ -54,10 +54,47 @@ export default class HabitsSync extends Command {
 
     // Fetch habits from salesforce 
     
-
-    /* const habits = await conn.query('Select Id , name , Category__c from habit__c ')
+    const habits = await conn.query('Select Id , Name , Category__c,Contact__c,Description__c,Habit_Goal__c,Habit_Reminder__c,TargetFrequency__c from habit__c ')
     for ( const habit of habits.records){
-        this.log(`the record from Salesforce ${habit.Id}`)
-    } */
+        const localHabit = this.#db.getHabitBySfid(habit.Id);
+        if(!localHabit){
+          this.#db.createHabit({
+            ContactId: habit.Contact__c,
+            Date: habit.Habit_Goal__c,
+            Description : habit.Description__c,
+            Frequency : habit.TargetFrequency__c,
+            Reminder: habit.Habit_Reminder__c,
+            category: habit.Category__c,
+            name: habit.Name,
+            sfid: habit.Id,
+          })
+          this.log(`Created habit with the id : ${habit.Id}`)
+        }else if(localHabit.sfid !== null){
+          this.#db.updateHabit({
+            ContactId: habit.Contact__c,
+            Date: habit.Habit_Goal__c,
+            Description : habit.Description__c,
+            Frequency : habit.TargetFrequency__c,
+            Reminder: habit.Habit_Reminder__c,
+            category: habit.Category__c,
+            id : localHabit.id,
+            name: habit.Name,
+            sfid: habit.Id,
+          })
+          this.log(`Updated habit with the id : ${localHabit.id}`)
+        }
+    } 
+    
+    // clean up the deleted Habit
+    const deletedHabit = await conn.query(`Select Id from habit__c Where IsDeleted = true`,{scanAll:true,})
+    for( const habit of deletedHabit.records){
+      const localHabit = this.#db.getHabitBySfid(habit.Id);
+      if(localHabit){
+        this.#db.deleteHabit(localHabit.id)
+        this.log(`this habit is deleted ${localHabit.id}`)
+      }
+    } 
+
+    this.log('The command is Finished')
   }
 }

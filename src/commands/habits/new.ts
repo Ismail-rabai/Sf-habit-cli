@@ -46,6 +46,16 @@ export default class HabitsNew extends Command {
       args.category = result.category
     }
 
+    if (!flags.ContactId) {
+      const result = await inquirer.prompt([{
+        choices: ['0037R00003Otk4uQAB', '0037R00003Ps9l3QAB'],
+        message: 'What is the contact related to the habit?',
+        name: 'ContactId',
+        type: 'list',
+      }])
+      flags.ContactId = result.ContactId
+    }
+
     const habit : Habit = {
       ContactId: flags.ContactId || '',
       Date:flags.Date,
