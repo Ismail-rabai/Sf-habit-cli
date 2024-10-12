@@ -54,7 +54,7 @@
     "@salesforce/plugin-auth": "^3.5.5",
     "better-sqlite3": "^9.4.5",
     "cli-ux": "^6.0.9",
-    "inquirer": "^8.0.0"
+    "inquirer": "^8.2.6"
   },
   "devDependencies": {
     "@oclif/prettier-config": "^0.2.1",
